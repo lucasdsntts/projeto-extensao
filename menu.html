@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Principal - Gestão Ação Social</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 flex flex-col items-center text-slate-800 antialiased">
+
+  <div class="w-full max-w-md space-y-6">
+
+    <!-- CABEÇALHO DO MENU -->
+    <header class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-3xl shadow-md text-center relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+      <span class="text-3xl mb-1 inline-block">⚙️</span>
+      <h1 class="text-xl font-bold tracking-tight">Painel de Gestão</h1>
+      <p class="text-xs text-blue-200 mt-0.5">Selecione um módulo para gerir</p>
+    </header>
+
+    <!-- MENU DE CARTÕES (Clean Code Architecture) -->
+    <div class="grid grid-cols-1 gap-4">
+
+      <!-- Cartão: Estoque -->
+      <a href="estoque.html" class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/80 hover:border-blue-500 hover:shadow-md transition flex items-center gap-4 group">
+        <div class="bg-blue-50 text-blue-700 p-3 rounded-2xl text-2xl group-hover:scale-110 transition">📦</div>
+        <div>
+          <h2 class="text-base font-bold text-slate-800">Controle de Estoque</h2>
+          <p class="text-xs text-slate-500">Consultar e atualizar total de cestas</p>
+        </div>
+      </a>
+
+      <!-- Cartão: Famílias -->
+      <a href="familias.html" class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/80 hover:border-emerald-500 hover:shadow-md transition flex items-center gap-4 group">
+        <div class="bg-emerald-50 text-emerald-700 p-3 rounded-2xl text-2xl group-hover:scale-110 transition">👥</div>
+        <div>
+          <h2 class="text-base font-bold text-slate-800">Famílias Assistidas</h2>
+          <p class="text-xs text-slate-500">Cadastrar, procurar e editar cadastros</p>
+        </div>
+      </a>
+
+      <!-- Cartão: Entregas -->
+      <a href="entregas.html" class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200/80 hover:border-amber-500 hover:shadow-md transition flex items-center gap-4 group">
+        <div class="bg-amber-50 text-amber-700 p-3 rounded-2xl text-2xl group-hover:scale-110 transition">🚚</div>
+        <div>
+          <h2 class="text-base font-bold text-slate-800">Registo de Entregas</h2>
+          <p class="text-xs text-slate-500">Dar baixa em cestas e ver relatórios</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- RODAPÉ / VOLTAR -->
+    <div class="text-center pt-2">
+      <a href="index.html" class="text-xs font-medium text-slate-500 hover:text-slate-900 transition underline underline-offset-4">← Voltar à Página Pública (Doações)</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ação Social Solidária - Apoie esta Causa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 flex flex-col items-center text-slate-800 antialiased">
+
+  <div class="w-full max-w-md space-y-6">
+
+    <!-- CABEÇALHO -->
+    <header class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-3xl shadow-md text-center relative overflow-hidden">
+      <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+      <span class="text-3xl mb-1 inline-block">🤝</span>
+      <h1 class="text-xl font-bold tracking-tight">Ação Social Solidária</h1>
+      <p class="text-xs text-blue-200 mt-0.5">Transformando vidas através da solidariedade</p>
+    </header>
+
+    <!-- SECÇÃO DE DOAÇÃO PIX -->
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 text-center space-y-4">
+      <div class="inline-block bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+        💚 Faça uma Doação
+      </div>
+      
+      <p class="text-xs text-slate-600 leading-relaxed">
+        A sua contribuição ajuda-nos a comprar e entregar cestas básicas para famílias carenciadas. Escaneie o QR Code abaixo ou utilize a chave Pix.
+      </p>
+
+      <!-- Imagem do QR Code Pix -->
+      <div class="flex justify-center p-2 bg-slate-50 rounded-2xl border border-slate-100">
+        <img src="qrcode-pix.jpeg" alt="QR Code Pix" class="w-48 h-48 object-contain rounded-xl shadow-xs" />
+      </div>
+
+      <!-- Chave Pix Copiável (Opcional) -->
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 flex items-center justify-between text-xs">
+        <span class="text-slate-500 font-medium truncate mr-2" id="chave-pix">contato@acaosocial.org</span>
+        <button onclick="copiarChavePix()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg transition shrink-0">Copiar</button>
+      </div>
+    </div>
+
+    <!-- BOTÃO DE ACESSO AO PAINEL ADMINISTRATIVO -->
+    <div class="text-center pt-2">
+      <a href="menu.html" class="inline-block w-full bg-slate-900 hover:bg-black text-white font-bold py-3 px-4 rounded-2xl text-xs tracking-wide transition shadow-sm">
+        🔒 Aceder ao Painel Administrativo
+      </a>
+      <p class="text-[10px] text-slate-400 mt-2">Área restrita para voluntários e organizadores</p>
+    </div>
+
+  </div>
+
+  <script>
+    function copiarChavePix() {
+      const chave = document.getElementById('chave-pix').innerText;
+      navigator.clipboard.writeText(chave);
+      alert('Chave Pix copiada com sucesso!');
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Famílias - Ação Social</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between p-6">
+    <div class="max-w-md w-full mx-auto space-y-6">
+        
+        <!-- CABEÇALHO -->
+        <div class="text-center space-y-1">
+            <h1 class="text-xl font-bold text-slate-800">Famílias Cadastradas</h1>
+            <p class="text-xs text-slate-500">Registo e consulta de beneficiários</p>
+        </div>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+            <h2 class="text-sm font-bold text-slate-800">Nova Família</h2>
+            <form id="form-familia" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+                    <input type="text" id="nome" required placeholder="Nome do responsável" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">CPF / RG</label>
+                        <input type="text" id="cpf" placeholder="000.000.000-00" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Telefone</label>
+                        <input type="text" id="telefone" placeholder="(00) 00000-0000" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Endereço</label>
+                    <input type="text" id="endereco" placeholder="Rua, número, bairro" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm transition shadow-sm">
+                    Guardar Família
+                </button>
+            </form>
+        </div>
+
+        <!-- PESQUISA E LISTA -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+            <div class="space-y-2">
+                <h2 class="text-sm font-bold text-slate-800">Pesquisar</h2>
+                <input type="text" id="input-busca" placeholder="Digite o nome ou CPF..." class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="max-h-60 overflow-y-auto">
+                <ul id="lista-familias" class="divide-y divide-slate-100">
+                    <!-- Preenchido via app.js -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- VOLTAR AO MENU -->
+        <div class="text-center pt-2">
+            <a href="menu.html" class="text-xs font-medium text-slate-500 hover:text-slate-900 transition underline underline-offset-4">← Voltar ao Menu Principal</a>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div id="modal-editar" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white max-w-md w-full p-6 rounded-3xl shadow-lg space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800">Editar Família</h3>
+                <button id="btn-fechar-modal" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
+            </div>
+            <form id="form-editar-familia" class="space-y-3">
+                <input type="hidden" id="edit-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+                    <input type="text" id="edit-nome" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">CPF / RG</label>
+                        <input type="text" id="edit-cpf" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Telefone</label>
+                        <input type="text" id="edit-telefone" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Endereço</label>
+                    <input type="text" id="edit-endereco" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" id="btn-cancelar-modal" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">Cancelar</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dependências e Lógica -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="app.js?v=2"></script>
+</body>
+</html>
