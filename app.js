@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarFamilias();
     carregarEntregas();
     carregarSelectFamilias();
+    verificarLembretesEntregas();
 
     const formFamilia = document.getElementById('form-familia');
     if (formFamilia) {
@@ -38,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Eventos para os botões de relatório em entregas.html
     const btnExcel = document.getElementById('btn-exportar-excel');
     if (btnExcel) {
         btnExcel.addEventListener('click', exportarParaExcel);
@@ -99,24 +99,46 @@ async function atualizarEstoque() {
 }
 
 // ==========================================
-// 4. FUNÇÕES DE FAMÍLIAS, PESQUISA E EDIÇÃO
+// 4. FUNÇÕES DE FAMÍLIAS, PESQUISA, BADGES E EDIÇÃO
 // ==========================================
 let todasAsFamilias = [];
 
 async function carregarFamilias() {
     const listaFamilias = document.getElementById('lista-familias');
-    if (!listaFamilias) return;
-
+    
     try {
-        const { data, error } = await window.supabaseApp
+        const { data: familias, error: errFam } = await window.supabaseApp
             .from('familias')
             .select('*')
             .order('id', { ascending: false });
 
-        if (error) throw error;
+        if (errFam) throw errFam;
 
-        todasAsFamilias = data || [];
-        renderizarListaFamilias(todasAsFamilias);
+        // Busca as entregas da mais recente para a mais antiga
+        const { data: entregas, error: errEnt } = await window.supabaseApp
+            .from('entregas')
+            .select('familia_id, created_at')
+            .order('created_at', { ascending: false });
+
+        if (errEnt) throw errEnt;
+
+        const ultimaEntregaPorFamilia = {};
+        if (entregas) {
+            entregas.forEach(e => {
+                // Guarda apenas a primeira que encontrar (que é a mais recente devido ao ascending: false)
+                if (!ultimaEntregaPorFamilia[e.familia_id]) {
+                    ultimaEntregaPorFamilia[e.familia_id] = new Date(e.created_at);
+                }
+            });
+        }
+
+        todasAsFamilias = (familias || []).map(fam => {
+            return { ...fam, ultimaEntrega: ultimaEntregaPorFamilia[fam.id] || null };
+        });
+
+        if (listaFamilias) {
+            renderizarListaFamilias(todasAsFamilias);
+        }
     } catch (err) {
         console.error('Erro ao carregar famílias:', err.message);
     }
@@ -133,12 +155,33 @@ function renderizarListaFamilias(lista) {
         return;
     }
 
+    const hoje = new Date();
+    const DIAS_LIMITE = 30;
+
     lista.forEach(familia => {
+        let statusBadge = '';
+
+        if (familia.ultimaEntrega) {
+            const diffTempo = Math.abs(hoje - familia.ultimaEntrega);
+            const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+
+            if (diffDias >= DIAS_LIMITE) {
+                statusBadge = `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Apto (30+ dias)</span>`;
+            } else {
+                statusBadge = `<span class="bg-slate-100 text-slate-600 text-[10px] font-medium px-2 py-0.5 rounded-full">Em dia (${diffDias}d)</span>`;
+            }
+        } else {
+            statusBadge = `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Nunca recebeu</span>`;
+        }
+
         const li = document.createElement('li');
         li.className = "py-3 flex items-center justify-between text-xs";
         li.innerHTML = `
             <div>
-                <span class="font-bold text-slate-800 block">${familia.nome_responsavel}</span>
+                <div class="flex items-center gap-2 mb-0.5">
+                    <span class="font-bold text-slate-800">${familia.nome_responsavel}</span>
+                    ${statusBadge}
+                </div>
                 <span class="text-slate-500">CPF: ${familia.cpf || '-'} | Tel: ${familia.telefone || '-'}</span>
             </div>
             <div class="flex items-center gap-1.5">
@@ -273,23 +316,14 @@ async function carregarSelectFamilias() {
 
         if (errFam) throw errFam;
 
-        const { data: entregas, error: errEnt } = await window.supabaseApp
-            .from('entregas')
-            .select('familia_id');
-
-        if (errEnt) throw errEnt;
-
-        const idsComEntrega = new Set(entregas.map(e => e.familia_id));
-        const familiasDisponiveis = familias.filter(fam => !idsComEntrega.has(fam.id));
-
         select.innerHTML = '<option value="">Selecione uma família...</option>';
         
-        if (familiasDisponiveis.length === 0) {
-            select.innerHTML = '<option value="">Todas as famílias já receberam cesta!</option>';
+        if (!familias || familias.length === 0) {
+            select.innerHTML = '<option value="">Nenhuma família cadastrada!</option>';
             return;
         }
 
-        familiasDisponiveis.forEach(fam => {
+        familias.forEach(fam => {
             select.innerHTML += `<option value="${fam.id}">${fam.nome_responsavel}</option>`;
         });
     } catch (err) {
@@ -495,5 +529,72 @@ async function exportarParaPdf() {
     } catch (err) {
         console.error('Erro ao gerar PDF:', err.message);
         Swal.fire('Erro', 'Não foi possível gerar o PDF.', 'error');
+    }
+}
+
+// ==========================================
+// 7. SISTEMA DE LEMBRETE DE ENTREGAS
+// ==========================================
+async function verificarLembretesEntregas() {
+    const containerAlerta = document.getElementById('container-lembrete');
+    if (!containerAlerta) return;
+
+    try {
+        const { data: entregas, error } = await window.supabaseApp
+            .from('entregas')
+            .select('familia_id, created_at')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const ultimaEntregaPorFamilia = {};
+        if (entregas) {
+            entregas.forEach(e => {
+                if (!ultimaEntregaPorFamilia[e.familia_id]) {
+                    ultimaEntregaPorFamilia[e.familia_id] = new Date(e.created_at);
+                }
+            });
+        }
+
+        const hoje = new Date();
+        const DIAS_PARA_LEMBRETE = 30;
+        let familiasParaAvisar = 0;
+
+        if (!todasAsFamilias || todasAsFamilias.length === 0) {
+            const { data: famData } = await window.supabaseApp.from('familias').select('*');
+            todasAsFamilias = famData || [];
+        }
+
+        todasAsFamilias.forEach(familia => {
+            const dataUltima = ultimaEntregaPorFamilia[familia.id];
+            
+            if (dataUltima) {
+                const diffTempo = Math.abs(hoje - dataUltima);
+                const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
+
+                if (diffDias >= DIAS_PARA_LEMBRETE) {
+                    familiasParaAvisar++;
+                }
+            } else {
+                familiasParaAvisar++;
+            }
+        });
+
+        if (familiasParaAvisar > 0) {
+            containerAlerta.innerHTML = `
+                <div class="bg-amber-100 border-l-4 border-amber-500 text-amber-800 p-4 rounded-2xl shadow-sm flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base">🔔</span>
+                        <span>Existem <b>${familiasParaAvisar}</b> família(s) aguardando nova cesta (mais de 30 dias).</span>
+                    </div>
+                    <a href="familias.html" class="bg-amber-500 text-white px-3 py-1.5 rounded-xl font-semibold hover:bg-amber-600 transition shrink-0">Ver</a>
+                </div>
+            `;
+        } else {
+            containerAlerta.innerHTML = '';
+        }
+
+    } catch (err) {
+        console.error('Erro ao verificar lembretes:', err.message);
     }
 }

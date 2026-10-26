@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Famílias - Ação Social</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between p-6">
@@ -59,49 +58,19 @@
 
         <!-- VOLTAR AO MENU -->
         <div class="text-center pt-2">
-            <a href="menu.html" class="text-xs font-medium text-slate-500 hover:text-slate-900 transition underline underline-offset-4">← Voltar ao Menu Principal</a>
+            <a href="index.html" class="text-xs font-medium text-slate-500 hover:text-slate-900 transition underline underline-offset-4">← Voltar ao Menu Principal</a>
         </div>
 
     </div>
 
     <!-- MODAL DE EDIÇÃO -->
     <div id="modal-editar" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
-        <div class="bg-white max-w-md w-full p-6 rounded-3xl shadow-lg space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-slate-800">Editar Família</h3>
-                <button id="btn-fechar-modal" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
-            </div>
-            <form id="form-editar-familia" class="space-y-3">
-                <input type="hidden" id="edit-id">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
-                    <input type="text" id="edit-nome" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">CPF / RG</label>
-                        <input type="text" id="edit-cpf" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Telefone</label>
-                        <input type="text" id="edit-telefone" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Endereço</label>
-                    <input type="text" id="edit-endereco" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button type="button" id="btn-cancelar-modal" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition">Cancelar</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition">Salvar Alterações</button>
-                </div>
-            </form>
-        </div>
+        <!-- (Utiliza SweetAlert no JS) -->
     </div>
 
     <!-- Dependências e Lógica -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
